@@ -1,6 +1,11 @@
 # Illini Course Planner
 
-A course planner for UIUC students, in two parts:
+A course planner for UIUC students. It opens on **Next semester**: after you bring in your audit
+(or tap "See an example"), it shows the courses to take next term, why each one matters ("needed
+for MSE 406, which only runs in fall"), and a week schedule that fits. When next term's sections
+aren't published yet, it schedules with the same semester's times from last year and says so.
+
+The other two tabs:
 
 - **My degree.** Import your uAchieve degree audit (paste it, upload the saved page, or use the
   browser extension). The planner sees what you've taken and what's left, lists the courses that

@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CourseDetail from "./CourseDetail";
 import DegreeView from "./DegreeView";
+import NextSemester from "./NextSemester";
+import Welcome from "./Welcome";
 import { takeAuditFromUrl } from "@/lib/auditImport";
+import { termSeason } from "@/lib/plan";
+import { usePlan } from "@/lib/usePlan";
 import WeekGrid from "./WeekGrid";
 import { GEN_ED_LABELS, loadCourses, loadIndex, loadTerms, termLabel, type TermIndex } from "@/lib/data";
 import { formatTime } from "@/lib/normalize";
@@ -43,16 +47,19 @@ export default function Planner() {
   const [index, setIndex] = useState<TermIndex | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  const [tab, setTab] = useState<"degree" | "schedule">("degree");
+  const [tab, setTab] = useState<"next" | "plan" | "schedule">("next");
   const [auditText, setAuditTextState] = useState<string | null>(null);
-  const setAuditText = (t: string | null) => {
+  const [example, setExample] = useState(false);
+  const setAuditText = (t: string | null, isExample = false) => {
     setAuditTextState(t);
-    try { if (t) localStorage.setItem("planner.audit", t); else localStorage.removeItem("planner.audit"); } catch { /* storage unavailable */ }
+    setExample(isExample);
+    // An example audit is never saved: reloading brings you back to the start screen.
+    try { if (t && !isExample) localStorage.setItem("planner.audit", t); else localStorage.removeItem("planner.audit"); } catch { /* storage unavailable */ }
   };
   useEffect(() => {
     (async () => {
       const fromUrl = await takeAuditFromUrl();
-      if (fromUrl) { setAuditText(fromUrl); setTab("degree"); return; }
+      if (fromUrl) { setAuditText(fromUrl); setTab("next"); return; }
       try { const saved = localStorage.getItem("planner.audit"); if (saved) setAuditTextState(saved); } catch { /* storage unavailable */ }
     })();
   }, []);
@@ -75,11 +82,35 @@ export default function Planner() {
   const [sortByGpa, setSortByGpa] = useState(false);
 
   // ---- data loading ----
+  const [planIndex, setPlanIndex] = useState<TermIndex | null>(null);
+  const [maxHours, setMaxHours] = useState(17);
   useEffect(() => {
     loadTerms()
-      .then((t) => { setTerms(t); setTerm(t[0] ?? ""); })
+      .then((t) => {
+        setTerms(t);
+        setTerm((cur) => cur || t[0] || "");
+        if (t[0]) loadIndex(t[0]).then(setPlanIndex).catch((e) => setLoadError(String(e)));
+      })
       .catch((e) => setLoadError(String(e)));
   }, []);
+
+  const plan = usePlan(auditText, planIndex, profile, maxHours);
+  // Sections to schedule next term with: the term itself once published, else the same season last year.
+  const { scheduleTerm, isEstimate } = useMemo(() => {
+    if (!plan.target) return { scheduleTerm: null, isEstimate: false };
+    const season = termSeason(plan.target);
+    const exact = `20${plan.target.slice(2)}-${{ fa: "fall", sp: "spring", su: "summer" }[season]}`;
+    if (terms.includes(exact)) return { scheduleTerm: exact, isEstimate: false };
+    const same = terms.find((t) => termSeason(t) === season);
+    return { scheduleTerm: same ?? null, isEstimate: true };
+  }, [plan.target, terms]);
+  const openInBuilder = (ids: string[], t: string) => {
+    setTerm(t);
+    setCart(ids.map((courseId) => ({ courseId, required: true })));
+    setPrefs({ ...prefs, pinned: {}, excluded: [], includeClosed: isEstimate || prefs.includeClosed });
+    setSelected(null);
+    setTab("schedule");
+  };
   useEffect(() => {
     if (!term) return;
     loadIndex(term).then(setIndex).catch((e) => setLoadError(String(e)));
@@ -184,9 +215,11 @@ export default function Planner() {
       <header className="topbar">
         <div className="brand">Illini Course Planner</div>
         <nav className="tabs" aria-label="Views">
-          <button aria-pressed={tab === "degree"} onClick={() => setTab("degree")}>My degree</button>
+          <button aria-pressed={tab === "next"} onClick={() => setTab("next")}>Next semester</button>
+          <button aria-pressed={tab === "plan"} onClick={() => setTab("plan")}>Plan to graduate</button>
           <button aria-pressed={tab === "schedule"} onClick={() => setTab("schedule")}>Schedule builder{cart.length ? ` (${cart.length})` : ""}</button>
         </nav>
+        {tab === "schedule" && <>
         <label>Term
           <select value={term} onChange={(e) => setTerm(e.target.value)}>
             {terms.map((t) => <option key={t} value={t}>{termLabel(t)}</option>)}
@@ -197,19 +230,30 @@ export default function Planner() {
             {["Freshman", "Sophomore", "Junior", "Senior"].map((s) => <option key={s}>{s}</option>)}
           </select>
         </label>
-        <label>Major
-          <select value={profile.major} onChange={() => {}} disabled title="More majors are coming">
-            <option>Materials Science and Engineering</option>
-          </select>
-        </label>
+        </>}
       </header>
 
       {loadError && <div className="notice bad" role="alert">Couldn&apos;t load course data: {loadError}</div>}
 
-      {tab === "degree" && (
+      {tab !== "schedule" && !plan.audit && (
         <main className="degree-wrap">
-          <DegreeView auditText={auditText} setAuditText={setAuditText} index={index} profile={profile}
-            cartIds={cartIds} onAddToCart={addMany} onOpenSchedule={() => setTab("schedule")} />
+          <Welcome onImport={(t, ex) => { setAuditText(t, !!ex); setTab("next"); }} />
+        </main>
+      )}
+      {tab === "next" && plan.audit && (
+        <main className="degree-wrap">
+          {!planIndex ? <p className="hint">Loading courses…</p> : (
+            <NextSemester plan={plan} scheduleTerm={scheduleTerm} isEstimate={isEstimate} profile={profile} example={example}
+              onOpenInBuilder={openInBuilder} onSeeFullPlan={() => setTab("plan")} onExitExample={() => setAuditText(null)} />
+          )}
+        </main>
+      )}
+      {tab === "plan" && plan.audit && (
+        <main className="degree-wrap">
+          <DegreeView plan={plan} index={planIndex} maxHours={maxHours} setMaxHours={setMaxHours}
+            cartIds={cartIds} onAddToCart={addMany} onOpenSchedule={() => setTab("schedule")}
+            onBuildTerm={(ids) => scheduleTerm && openInBuilder(ids, scheduleTerm)}
+            onReimport={() => { setAuditText(null); setTab("next"); }} />
         </main>
       )}
       <main className="layout" hidden={tab !== "schedule"}>
@@ -395,7 +439,16 @@ export default function Planner() {
           )}
 
           {cart.length === 0 ? (
-            <div className="notice">Add the courses you want next semester. The planner finds every combination of lecture, discussion and lab sections that fits your week, and ranks them by your preferences.</div>
+            <div className="notice">
+              Add the courses you want next semester. The planner finds every combination of lecture, discussion and lab sections that fits your week, and ranks them by your preferences.
+              {plan.roadmap?.terms[0] && scheduleTerm && (
+                <div style={{ marginTop: 10 }}>
+                  <button className="primary" onClick={() => openInBuilder([...new Set(plan.roadmap!.terms[0].items.map((i) => i.id))], scheduleTerm)}>
+                    Start from my recommended courses
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <WeekGrid schedule={schedule} colorOf={colorOf} busy={prefs.busy} selected={selected} onSelect={setSelected} />
           )}

@@ -12,9 +12,11 @@ interface Props {
   busy: BusyBlock[];
   selected: string | null;
   onSelect: (courseId: string) => void;
+  /** Hide the seat-status legend (for estimated schedules, where status is unknown). */
+  hideStatus?: boolean;
 }
 
-export default function WeekGrid({ schedule, colorOf, busy, selected, onSelect }: Props) {
+export default function WeekGrid({ schedule, colorOf, busy, selected, onSelect, hideStatus }: Props) {
   type Item = {
     key: string; courseId: string | null; day: Day; start: number; end: number;
     label: string; meta: string; status: string; part: "1" | "A" | "B";
@@ -89,9 +91,11 @@ export default function WeekGrid({ schedule, colorOf, busy, selected, onSelect }
         </div>
       )}
       <div className="legend">
-        <span><i />Open</span>
-        <span><i className="restricted" />Open (restricted)</span>
-        <span><i className="closed" />Closed</span>
+        {!hideStatus && <>
+          <span><i />Open</span>
+          <span><i className="restricted" />Open (restricted)</span>
+          <span><i className="closed" />Closed</span>
+        </>}
         <span>Half-width blocks run for 8 weeks</span>
       </div>
     </div>

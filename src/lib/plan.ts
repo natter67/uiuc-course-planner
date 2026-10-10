@@ -188,6 +188,14 @@ export interface PlannedItem {
   note?: string;
   /** True when the course is only here because a later course needs it. */
   prereqFor?: string;
+  /** Other requirements this course also counts toward in the plan. */
+  alsoCounts?: string[];
+  /** Short reasons, most important first: "Needed for MSE 406", "Only offered in spring". */
+  reasons?: string[];
+  kind?: NeedPlan["kind"] | "prereq";
+  /** "major" | "minor" | "gened" — what the course is for, for badges. */
+  reqKind?: string;
+  reqTitle?: string;
 }
 
 export interface PlannedTerm {
@@ -226,13 +234,13 @@ export function buildRoadmap(
   let t = nextTerm(currentTerm(audit));
 
   type Work = {
-    key: string; label: string; kind: NeedPlan["kind"]; reqId: string; reqKind: string;
+    key: string; label: string; kind: NeedPlan["kind"]; reqId: string; reqKind: string; reqTitle: string;
     hours: number; courses: number; groupCounts: Map<string, { n: number; h: number }>;
   };
   const seed = plansFor("sp");
   const work = new Map<string, Work>(
     seed.map((p) => [p.need.key, {
-      key: p.need.key, label: p.need.label, kind: p.kind, reqId: p.need.requirement.id, reqKind: p.need.requirement.kind,
+      key: p.need.key, label: p.need.label, kind: p.kind, reqId: p.need.requirement.id, reqKind: p.need.requirement.kind, reqTitle: p.need.requirement.title,
       hours: p.need.needs.hours ?? 0, courses: p.need.needs.courses ?? p.need.needs.groups ?? 0, groupCounts: new Map(),
     }]),
   );
@@ -271,7 +279,8 @@ export function buildRoadmap(
     };
     const place = (w: Work, c: Candidate) => {
       const h = hoursOf(c.row);
-      items.push({ id: c.row.id, title: c.row.title, hours: h, needLabel: w.label, placeholder: false });
+      const credited: string[] = [];
+      items.push({ id: c.row.id, title: c.row.title, hours: h, needLabel: w.label, placeholder: false, alsoCounts: credited, kind: w.kind, reqKind: w.reqKind, reqTitle: w.reqTitle });
       here.add(c.row.id);
       if (!isLab(w)) usedIds.add(c.row.id);
       hours += h;
@@ -283,8 +292,8 @@ export function buildRoadmap(
       // Double counting: gen ed needs are reduced by any course that matches them.
       for (const k of c.alsoFillsKeys) {
         const o = work.get(k);
-        if (o && open(o) && (SHAREABLE.has(o.reqKind) || SHAREABLE.has(w.reqKind)) && o.reqId !== w.reqId) credit(o, h);
-        else if (o && open(o) && o.reqId === w.reqId && orReqs.has(o.reqId)) credit(o, h);
+        if (o && open(o) && (SHAREABLE.has(o.reqKind) || SHAREABLE.has(w.reqKind)) && o.reqId !== w.reqId) { credit(o, h); credited.push(o.label); }
+        else if (o && open(o) && o.reqId === w.reqId && orReqs.has(o.reqId)) { credit(o, h); credited.push(o.label); }
       }
     };
 
@@ -298,7 +307,7 @@ export function buildRoadmap(
         const own = checkPrereqs(parsePrereqs(r.prereq ? `Prerequisite: ${r.prereq}` : ""), have, new Set(), here);
         const h = hoursOf(r);
         if (!offered || own.state === "missing" || here.has(r.id) || hours + h > opts.maxHours) continue;
-        items.push({ id: r.id, title: r.title, hours: h, needLabel: `Prerequisite for ${c.row.id}`, placeholder: false, prereqFor: c.row.id });
+        items.push({ id: r.id, title: r.title, hours: h, needLabel: `Prerequisite for ${c.row.id}`, placeholder: false, prereqFor: c.row.id, kind: "prereq" });
         here.add(r.id);
         hours += h;
         return;
@@ -348,6 +357,7 @@ export function buildRoadmap(
     t = nextTerm(t);
   }
 
+  addReasons(terms, byId);
   const finalPlans = new Map(plansFor("sp").map((p) => [p.need.key, p]));
   const unplaced: PlannedItem[] = [...work.values()].filter(open).map((w) => {
     const left = (finalPlans.get(w.key)?.candidates ?? []).filter((c) => !have.has(c.row.id));
@@ -357,4 +367,40 @@ export function buildRoadmap(
     return { id: w.label, title: "", hours: w.hours, needLabel: w.label, placeholder: true, note: why };
   });
   return { terms, unplaced };
+}
+
+const SEASON_NAME: Record<string, string> = { fa: "fall", sp: "spring", su: "summer", wi: "winter" };
+
+/** Courses (directly or through a chain) that need `id` first, among the later planned items. */
+function dependents(id: string, later: PlannedItem[], byId: Map<string, IndexRow>): PlannedItem[] {
+  return later.filter((i) => !i.placeholder && i.id !== id && new RegExp(`\\b${id.replace(" ", "\\s?")}\\b`).test(byId.get(i.id)?.prereq ?? ""));
+}
+
+function lowerTitle(label: string): string {
+  return label.toLowerCase().replace(/\b(mse|u\.s\.)\b/g, (m) => m.toUpperCase()).replace(/^\w/, (c) => c.toUpperCase());
+}
+
+/** Explains each planned course in a few words, most important reason first. */
+export function addReasons(terms: PlannedTerm[], byId: Map<string, IndexRow>) {
+  terms.forEach((t, ti) => {
+    const later = terms.slice(ti + 1).flatMap((x) => x.items.map((i) => ({ ...i, term: x.term })));
+    for (const item of t.items) {
+      if (item.placeholder) continue;
+      const reasons: string[] = [];
+      if (item.prereqFor) reasons.push(`Needed before ${item.prereqFor}`);
+      const deps = item.prereqFor ? [] : (dependents(item.id, later, byId) as (PlannedItem & { term: string })[]);
+      if (deps.length) {
+        const first = deps[0];
+        reasons.push(`Needed for ${first.id} in ${termName(first.term)}${deps.length > 1 ? ` (and ${deps.length - 1} more)` : ""}`);
+      }
+      const seasons = (byId.get(item.id)?.seasons ?? "").split(" ").filter(Boolean);
+      if (seasons.length === 1) reasons.push(`Only offered in ${SEASON_NAME[seasons[0]] ?? seasons[0]}`);
+      if (item.alsoCounts?.length) reasons.push(`Also counts for ${item.alsoCounts.map(lowerTitle).join(" and ")}`);
+      if (!item.prereqFor) {
+        const what = item.reqKind === "minor" ? lowerTitle(item.reqTitle?.replace(/\(\d+\)/, "").trim() ?? item.needLabel) : lowerTitle(item.needLabel);
+        reasons.push(`${item.kind === "specific" ? "Required" : "Fills"}: ${what}`);
+      }
+      item.reasons = reasons;
+    }
+  });
 }

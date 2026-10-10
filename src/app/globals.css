@@ -297,3 +297,35 @@ details.panel > summary { padding: 12px 14px; }
   .topbar label { font-size: 12px; }
   .roadmap { grid-auto-columns: minmax(78vw, 1fr); }
 }
+
+/* ---------- welcome ---------- */
+.welcome { max-width: 820px; margin: 0 auto; display: grid; gap: 20px; }
+.welcome-hero { padding: 28px 4px 4px; }
+.welcome-hero h1 { font-size: clamp(28px, 4.4vw, 44px); line-height: 1.08; margin: 0 0 12px; letter-spacing: -0.01em; max-width: 18ch; }
+.welcome-hero p { font-size: 17px; color: var(--muted); max-width: 62ch; margin: 0 0 16px; }
+.welcome-import h2 { font-size: 18px; }
+
+/* ---------- next semester ---------- */
+.next { max-width: 1320px; margin: 0 auto; display: grid; gap: 16px; }
+.next-head h1 { font-size: clamp(24px, 3.2vw, 34px); margin: 4px 0 6px; letter-spacing: -0.01em; }
+.next-head p { margin: 0; color: var(--muted); font-size: 16px; }
+.next-grid { display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.next-grid > * { min-width: 0; }
+.example-bar { margin: 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.link { background: none; border: 0; padding: 0; color: var(--action); cursor: pointer; text-decoration: underline; font: inherit; }
+.recs { list-style: none; margin: 0; padding: 10px 14px 14px; display: grid; gap: 10px; }
+.recs > li { border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: var(--radius-s); padding: 10px 12px; }
+.rec-top { display: flex; align-items: center; gap: 8px; }
+.rec-id { font-weight: 700; font-size: 16px; }
+.rec-hours { margin-left: auto; }
+.rec-title { color: var(--muted); font-size: 14px; }
+.badge { font-size: 11.5px; font-weight: 700; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); }
+.b-req { color: var(--action); border-color: color-mix(in srgb, var(--action) 40%, var(--line)); }
+.b-pre { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, var(--line)); }
+.b-minor { color: var(--c4); border-color: color-mix(in srgb, var(--c4) 40%, var(--line)); }
+.b-gened, .b-elective { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, var(--line)); }
+.reasons-list { margin: 6px 0 0; padding-left: 16px; font-size: 13px; color: var(--muted); }
+.reasons-list li.key { color: var(--ink); font-weight: 700; }
+.swap { margin-top: 6px; font-size: 13px; }
+.swap select { width: 100%; padding: 4px 6px; border: 1px solid var(--line); border-radius: var(--radius-s); background: var(--surface); }
+@media (max-width: 1000px) { .next-grid { grid-template-columns: minmax(0, 1fr); } }

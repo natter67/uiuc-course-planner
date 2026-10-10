@@ -1,116 +1,32 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { needsText, parseAudit, takenIds, type Audit } from "@/lib/audit";
-import { looksLikeAudit } from "@/lib/auditImport";
-import { serializeAuditHtml } from "@/lib/auditDom";
+import { useState } from "react";
+import { needsText, takenIds } from "@/lib/audit";
 import { GEN_ED_LABELS, type TermIndex } from "@/lib/data";
-import {
-  buildNeedPlans,
-  buildRoadmap,
-  currentTerm,
-  hoursOf,
-  nextTerm,
-  termName,
-  termSeason,
-  type Candidate,
-  type NeedPlan,
-  type Season,
-} from "@/lib/plan";
-import type { StudentProfile } from "@/lib/restrictions";
+import { hoursOf, termName, termSeason, type Candidate, type NeedPlan, type Season } from "@/lib/plan";
+import type { PlanState } from "@/lib/usePlan";
 
 interface Props {
-  auditText: string | null;
-  setAuditText: (t: string | null) => void;
+  plan: PlanState;
   index: TermIndex | null;
-  profile: StudentProfile;
+  maxHours: number;
+  setMaxHours: (n: number) => void;
   cartIds: Set<string>;
   onAddToCart: (ids: string[], required: boolean) => void;
   onOpenSchedule: () => void;
+  onBuildTerm: (ids: string[]) => void;
+  onReimport: () => void;
 }
 
-const UACHIEVE = "https://uachieve.apps.uillinois.edu/uachieve_uiuc/audit/list.html";
-
-function title(s: string): string {
+export function title(s: string): string {
   return s.toLowerCase().replace(/\b(\w)/g, (c) => c.toUpperCase()).replace(/\bMse\b/g, "MSE").replace(/\bU\.s\./g, "U.S.").replace(/ And /g, " and ").replace(/ Of /g, " of ").replace(/ For /g, " for ").replace(/ The /g, " the ");
 }
 
-export default function DegreeView({ auditText, setAuditText, index, profile, cartIds, onAddToCart, onOpenSchedule }: Props) {
-  const [draft, setDraft] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [maxHours, setMaxHours] = useState(17);
+export default function DegreeView({ plan, index, maxHours, setMaxHours, cartIds, onAddToCart, onBuildTerm, onReimport }: Props) {
   const [open, setOpen] = useState<string | null>(null);
-
-  const audit: Audit | null = useMemo(() => {
-    if (!auditText) return null;
-    try { return parseAudit(auditText); } catch { return null; }
-  }, [auditText]);
-
+  const { audit, plans, roadmap, target } = plan;
+  if (!audit) return null;
   const indexSeason: Season = index ? termSeason(index.term) : "fa";
-  const target = audit ? nextTerm(currentTerm(audit)) : "";
-  const plans = useMemo(
-    () => (audit && index ? buildNeedPlans(audit, index.courses, termSeason(target), indexSeason, profile) : []),
-    [audit, index, target, indexSeason, profile],
-  );
-  const roadmap = useMemo(() => {
-    if (!audit || !index) return null;
-    const cache = new Map<Season, NeedPlan[]>();
-    const plansFor = (s: Season) => {
-      if (!cache.has(s)) cache.set(s, buildNeedPlans(audit, index.courses, s, indexSeason, profile));
-      return cache.get(s)!;
-    };
-    return buildRoadmap(audit, plansFor, { maxHours, terms: 10 }, index.courses);
-  }, [audit, index, indexSeason, profile, maxHours]);
-
-  const importText = (text: string) => {
-    if (!looksLikeAudit(text)) {
-      setError("That doesn't look like a uAchieve audit. Open your audit, press Cmd+A (Ctrl+A on Windows) to select everything, copy, and paste here.");
-      return;
-    }
-    const a = parseAudit(text);
-    if (!a.requirements.length) { setError("No requirements found in the pasted text. Copy the whole audit page, not just part of it."); return; }
-    setError(null);
-    setAuditText(text);
-    setDraft("");
-  };
-
-  const importFile = async (file: File) => {
-    const raw = await file.text();
-    const isHtml = /<html|<div class="requirement/i.test(raw);
-    importText(isHtml ? serializeAuditHtml(raw) : raw);
-  };
-
-  // ---------- import screen ----------
-  if (!audit) {
-    return (
-      <div className="degree">
-        <div className="panel import">
-          <h2>Import your degree audit</h2>
-          <div className="body">
-            <p>The planner reads your uAchieve audit to see what you&apos;ve taken and what&apos;s left, then lists the courses that can fill each remaining requirement and lays out a plan to graduation. It works for any major or minor.</p>
-            <ol className="steps">
-              <li>Open <a href={UACHIEVE} target="_blank" rel="noreferrer">uAchieve</a>, sign in, and open your latest audit (run a new one if it&apos;s old).</li>
-              <li>Click anywhere on the audit, press <kbd>Cmd</kbd>+<kbd>A</kbd> then <kbd>Cmd</kbd>+<kbd>C</kbd> (Windows: <kbd>Ctrl</kbd>).</li>
-              <li>Paste it below.</li>
-            </ol>
-            <textarea className="paste" value={draft} onChange={(e) => setDraft(e.target.value)}
-              placeholder="Paste your whole audit here" aria-label="Audit text" rows={8} />
-            {error && <p className="notice bad" role="alert" style={{ margin: "8px 0" }}>{error}</p>}
-            <div className="row" style={{ marginTop: 8 }}>
-              <button className="primary" onClick={() => importText(draft)} disabled={!draft.trim()}>Import audit</button>
-              <span className="small">Your audit stays in this browser. It is never uploaded.</span>
-            </div>
-            <p className="small">
-              Or upload the audit page saved from your browser (File → Save Page As):{" "}
-              <input type="file" accept=".html,.htm,.txt" aria-label="Upload saved audit page"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) void importFile(f); }} />
-            </p>
-            <p className="small" style={{ marginBottom: 0 }}>With the Illini Course Planner browser extension, an &quot;Open in Illini Course Planner&quot; button appears on the audit page itself.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const { done, inProgress } = takenIds(audit);
   const totals = audit.totalHours;
@@ -143,7 +59,7 @@ export default function DegreeView({ auditText, setAuditText, index, profile, ca
             </div>
           )}
           <div className="row">
-            <button className="secondary" onClick={() => setAuditText(null)}>Import a newer audit</button>
+            <button className="secondary" onClick={onReimport}>Import a newer audit</button>
           </div>
         </div>
       </div>
@@ -179,7 +95,7 @@ export default function DegreeView({ auditText, setAuditText, index, profile, ca
                 </ul>
                 {ti === 0 && (
                   <button className="secondary" style={{ margin: "0 10px 10px" }}
-                    onClick={() => { onAddToCart(t.items.map((i) => i.id), true); onOpenSchedule(); }}>
+                    onClick={() => onBuildTerm([...new Set(t.items.map((i) => i.id))])}>
                     Build this schedule
                   </button>
                 )}
@@ -194,7 +110,7 @@ export default function DegreeView({ auditText, setAuditText, index, profile, ca
           )}
           <p className="small" style={{ padding: "0 14px 12px", margin: 0 }}>
             {termName(target)} sections aren&apos;t published yet, so seasons come from when each course ran in recent years. Electives are suggestions; swap any of them from the lists below.
-            {firstTerm && index && termSeason(firstTerm.term) !== indexSeason && " The schedule builder uses the latest published term until then."}
+            {firstTerm && index && termSeason(firstTerm.term) !== indexSeason && " The schedule builder uses last year's times for the same semester until then."}
           </p>
         </div>
       )}
