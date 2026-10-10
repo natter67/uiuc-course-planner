@@ -1,0 +1,307 @@
+Identifies School LogoStudent Name
+
+
+Select your style:  
+Skip navigation links.
+Audits 
+Courses 
+Transfer Evaluations
+Profile 
+Settings 
+Audit ResultsStudent and Audit Information
+Student, Example
+Materials Science & Engineering
+Prepared On	09/25/2026 06:27 PM	Program Code	0130 BS	Catalog Year	202508
+Student ID	000000000	Graduation Date		Job ID	0000000000000000
+Audit Resultstab selected
+Course History
+Progress Chart
+Audit
+You are here:  Audit
+ Hours 
+0.02.04.0
+ GPA 
+Categories
+Click on any area of the graph for further detail.
+0.00.10.20.30.40.50.60.70.80.91.0
+ Hours 
+0.02.04.0
+ GPA 
+ CompleteAudit Filter
+ In ProgressAudit Filter
+ UnfulfilledAudit Filter
+ PlannedAudit Filter
+Audit Result Details
+ Open All Sections    Close All SectionsView Help Modal Printer Friendly
+
+		------> AT LEAST ONE REQUIREMENT HAS NOT BEEN SATISFIED <------
+Requirement:	Requirement	
+************ STUDENT-GENERATED REPORT *************
+*****************************************************
+Please carefully review this academic progress report for
+accuracy. It is your responsibility to ensure that you satisfy
+all degree requirements.
+
+THIS REPORT INCLUDES COMPLETED AND IN-PROGRESS (IP) COURSEWORK.
+The report assumes successful completion of in-progress courses.
+
+******GRAINGER COLLEGE OF ENGINEERING ADVISING INFORMATION*******
+https://advising.grainger.illinois.edu/
+
+Questions should be brought to your chief advisor or
+206 Engineering Hall.
+
+*****************************************************
+Public Act 102-0174 requires Illinois public universities
+to provide cost and occupational outlook data to students
+at the time the student declares or changes their program
+of study. For related information, please visit:
+https://myillini.illinois.edu/Programs
+Requirement: SUMMARY OF COURSES IN PROGRESS	Requirement	SUMMARY OF COURSES IN PROGRESS
+  Sub-Requirement 	HOURS IN PROGRESS:
+( 18.0HOURS TAKEN)		
+  Sub-Requirement 	
+FA26	ECE 205 AL	3.0	IP	>I	
+FA26	MATH 257 A4	3.0	IP	>I	
+FA26	MSE 307 AE1	3.0	IP	>I	
+FA26	MSE 401 A	3.0	IP	>I	
+FA26	PHYS 214 A3	2.0	IP	>I	
+FA26	STAT 400 YL1	4.0	IP	>I	
+Requirement: REQUIRED COURSES	Requirement Unfulfilled	REQUIRED COURSES
+EARNED:	49.0 HOURS  
+  Sub-Requirement Complete 1)	ORIENTATION AND PROFESSIONAL DEVELOPMENT
+FA25	ENG 100 MS3	1.0	A		
+  Sub-Requirement In Progress 2)	FOUNDATIONAL MATHEMATICS
+FA25	MATH 220 1	0.0	PS		
+FA25	MATH 231 2	3.0	PS		
+FA25	MATH 241 AL1	4.0	A		
+SP26	MATH 285 F1	3.0	A		
+FA26	MATH 257 A4	3.0	IP	>I	
+  Sub-Requirement Complete 3)	FIRST SEMESTER CHEMISTRY
+FA25	CHEM 102 FL1	3.0	A		
+FA25	CHEM 103 A	1.0	A		
+  Sub-Requirement Complete 4)	SECOND SEMESTER CHEMISTRY
+SP26	CHEM 104 CL1	3.0	A		
+SP26	CHEM 105 LEC	1.0	A		
+  Sub-Requirement In Progress 5)	FOUNDATIONAL PHYSICS
+FA25	PHYS 211 A2	4.0	A		
+SU26	PHYS 212	4.0	TR		
+PARKLAND: PHY 142
+FA26	PHYS 214 A3	2.0	IP	>I	
+  Sub-Requirement Unfulfilled 6)	MATERIALS SCIENCE & ENGINEERING TECHNICAL CORE
+FA25	MSE 182 A	2.0	A		
+SP26	CS 101 AL1	3.0	A		
+SP26	MSE 201 S	3.0	A		
+FA26	ECE 205 AL	3.0	IP	>I	
+FA26	MSE 307 AE1	3.0	IP	>I	
+FA26	MSE 401 A	3.0	IP	>I	
+NEEDS:	6	COURSES
+SELECT FROM:	
+MSE 206, 308, 494, 495, 402, 406
+Requirement: FOCUS AREAS REQUIRED	Requirement Unfulfilled	FOCUS AREAS REQUIRED
+(NON BIOMATERIALS)
+EARNED:	   1SUB-GROUP
+NEEDS:	   4SUB-GROUPS
+  Sub-Requirement In Progress 1)	STATISTICS/ANALYSIS COURSE
+1	COURSE TAKEN	
+FA26	STAT 400 YL1	4.0	IP	>I	
+  Sub-Requirement Unfulfilled 2)	MSE 304 & 405 REQUIRED FOR NON BIOMATERIALS FOCUS
+NEEDS:	2	COURSES
+SELECT FROM:	
+MSE 304, 405
+  Sub-Requirement Unfulfilled 3)	TOPICAL LECTURES
+NEEDS:	12.0	HOURS
+  Sub-Requirement Unfulfilled 4)	MATERIALS LABORATORIES
+6 HOURS OF MSE 404
+NEEDS:	6.0	HOURS
+SELECT FROM:	
+MSE 404
+  Sub-Requirement Unfulfilled 5)	TECHNICAL ELECTIVES
+(200 level or higher courses---excluding independent
+study, research, or special topics.)
+(MSE 396 limited to 3 hours.)
+NEEDS:	6.0	HOURS
+-- NOT FROM:	
+***** **--, 297, 298, 397, 398, 497, 498 BIOC 290 CHEM 494 CHBE 494
+MATH 299 MSE 494, 495 PHYS 394
+SELECT FROM:	
+ABE 200 TO 496 AE 200 TO 496 BIOC 200 TO 496 BIOE 200 TO 496
+BIOP 200 TO 496 CHBE 200 TO 496 CHEM 200 TO 496 CEE 200 TO 496
+CS 200 TO 496 CSE 200 TO 496 ECE 200 TO 496 IE 200 TO 496 MATH 200
+TO 496 MCB 200 TO 496 ME 200 TO 496 MSE 200 TO 395, 396 3 Hour Limit,
+MSE 397 TO 496 NPRE 200 TO 496 PHYS 200 TO 496 SE 200 TO 496
+TAM 200 TO 496 TE 200 TO 496
+Requirement: COMPOSITION I - UNIVERSITY RHETORIC REQUIREMENT	Requirement Complete	COMPOSITION I - UNIVERSITY RHETORIC REQUIREMENT
+   	
+SP26	RHET 105 S1	4.0	A		
+Requirement: ADVANCED COMPOSITION	Requirement Unfulfilled	ADVANCED COMPOSITION
+  Sub-Requirement Unfulfilled 	
+NEEDS:	1	COURSE
+  Sub-Requirement Unfulfilled OR)	SEQUENCE COURSES
+(Both course must be completed GE credit)
+FA26	MSE 307 AE1	3.0	IP	>I	
+NEEDS:	1	GROUP
+Requirement: GENERAL EDUCATION REQUIREMENT	Requirement Unfulfilled	GENERAL EDUCATION REQUIREMENT
+Select from the approved campus-wide list:
+https://courses.illinois.edu
+EARNED:	9.0 HOURS  
+NEEDS:	3.0 HOURS  
+  Sub-Requirement Unfulfilled 1)	HUMANITIES & THE ARTS
+NEEDS:	6.0	HOURS
+  Sub-Requirement Complete 2)	SOCIAL & BEHAVIORAL SCIENCE
+9.0HOURS ADDED		
+SP22	UBEH 1-- 002	3.0	TR		
+PASADENA: PSYC 001
+FA25	PS 101 6	3.0	PS		
+FA25	RST 335 A	3.0	A		
+Requirement: CULTURAL STUDIES	Requirement Unfulfilled	CULTURAL STUDIES
+Select from the approved campus-wide list:
+https://courses.illinois.edu
+  Sub-Requirement Complete 1)	WESTERN/COMPARATIVE
+FA25	RST 335 A	3.0	A		
+  Sub-Requirement Unfulfilled 2)	NON-WESTERN CULTURES
+NEEDS:	1	COURSE
+  Sub-Requirement Unfulfilled 3)	U.S. MINORITY CULTURES
+NEEDS:	1	COURSE
+Requirement: UNIVERSITY FOREIGN LANGUAGE REQUIREMENT	Requirement Complete	UNIVERSITY FOREIGN LANGUAGE REQUIREMENT
+   	
+FA25	HSLES 3.0	0.0	HS		
+Requirement: CREDIT COUNTING TOWARD TOTAL HOURS	Requirement Complete	CREDIT COUNTING TOWARD TOTAL HOURS
+(Not used in any other requirement.)
+EARNED:	29.0 HOURS  
+  Sub-Requirement 	LIMITATIONS TO HOURS TOWARD GRADUATION
+SP23	TLAS 1-- 004	3.0	TR		
+PASADENA: PSYC 002
+FA25	ECON 1-- 4	3.0	PS		
+FA25	HIST 1-- 7	3.0	PS	>R	
+FA25	HIST 1-- 9	3.0	PS	>R	
+FA25	IB 100 3	3.0	PS		
+FA25	LAS 1-- 10	3.0	PS	>R	
+FA25	LAS 1-- 11	3.0	PS	>R	
+FA25	MATH 1-- 12	3.0	PS		
+FA25	RHET 1-- 5	3.0	PS		
+SP26	ENG 199 ML1	1.0	S	>R	
+SP26	ENG 199 MM1	1.0	S	>R	
+Requirement: MINIMUM OF 128 HOURS REQUIRED	Requirement Unfulfilled	MINIMUM OF 128 HOURS REQUIRED
+(Earned hours includes in-progress coursework;
+Hours and GPA include transfer credit.)
+EARNED:	99.0 HOURS  
+45.0 GPA HOURS EARNED0.00POINTS0.00GPA
+IN-PROGRESS	18.0 HOURS
+NEEDS:	29.0 HOURS  
+Requirement: UIUC GPA	Requirement In Progress	UIUC GPA
+(Only hours eligible for graduation are included.)
+35.0 GPA HOURS EARNED0.00POINTS0.00GPA
+Requirement: UNIVERSITY RESIDENCY REQUIREMENT	Requirement Unfulfilled	UNIVERSITY RESIDENCY REQUIREMENT
+EARNED:	55.0 HOURS  1SUB-GROUP
+NEEDS:	   1SUB-GROUP
+  Sub-Requirement Unfulfilled 	ADVANCED HOURS
+(300 Level and above. Excludes MUSC 487-9 and any 388
+credit not approved for Advanced Hours. Additional
+college level restrictions may apply.)
+( 14.0HOURS TAKEN)		
+NEEDS:	7.0	HOURS
+  Sub-Requirement In Progress 	45 HOURS OF UIUC COURSEWORK
+55.0HOURS ADDED		
+Requirement: ~~~~TECHNOLOGY &amp; MANAGEMENT MINOR (4033)	Requirement Unfulfilled	~~~~TECHNOLOGY & MANAGEMENT MINOR (4033)
+22 HOURS REQUIRED
+NOTE:
+YOU MUST EARN AT LEAST 6 HOURS OF ADVANCED COURSEWORK
+DISTINCT FROM CREDIT EARNED IN YOUR MAJOR OR ANOTHER MINOR
+NEEDS:	22.0 HOURS  
+  Sub-Requirement Unfulfilled 1)	REQUIRED COURSES FOR ENGINEERING STUDENTS
+NEEDS:	3	COURSES
+SELECT FROM:	
+ACCY 200 FIN 221 TMGT 365
+  Sub-Requirement Unfulfilled 2)	COURSES NEEDED BY ENGINEERING AND BUSINESS STUDENTS
+NEEDS:	4	COURSES
+SELECT FROM:	
+TMGT 366, 367, 460, 461
+Requirement: JAMES SCHOLAR CONTRACT	Requirement	JAMES SCHOLAR CONTRACT
+Our records show that you are currently a James Scholar.
+Requirements and specific information can be found at
+https://students.grainger.illinois.edu/jscholar/about/
+Requirement: SUMMARY OF COURSES TAKEN	Requirement	SUMMARY OF COURSES TAKEN
+   	
+SP22	UBEH 1-- 002	3.0	TR		
+PASADENA: PSYC 001
+SP23	TLAS 1-- 004	3.0	TR		
+PASADENA: PSYC 002
+FA25	CHEM 102 FL1	3.0	A		
+FA25	CHEM 103 A	1.0	A		
+FA25	ECON 1-- 4	3.0	PS		
+FA25	ENG 100 MS3	1.0	A		
+FA25	HIST 1-- 7	3.0	PS	>R	
+FA25	HIST 1-- 9	3.0	PS	>R	
+FA25	IB 100 3	3.0	PS		
+FA25	LAS 1-- 10	3.0	PS	>R	
+FA25	LAS 1-- 11	3.0	PS	>R	
+FA25	MATH 1-- 12	3.0	PS		
+FA25	MATH 220 1	5.0	PS		
+FA25	MATH 231 2	3.0	PS		
+FA25	MATH 241 AL1	4.0	A		
+FA25	MSE 182 A	2.0	A		
+FA25	PHYS 211 A2	4.0	A		
+FA25	PS 101 6	3.0	PS		
+FA25	RHET 1-- 5	3.0	PS		
+FA25	RST 335 A	3.0	A		
+SP26	CHEM 104 CL1	3.0	A		
+SP26	CHEM 105 LEC	1.0	A		
+SP26	CS 101 AL1	3.0	A		
+SP26	ENG 199 ML1	1.0	S	>R	
+SP26	ENG 199 MM1	1.0	S	>R	
+SP26	MATH 285 F1	3.0	A		
+SP26	MSE 201 S	3.0	A		
+SP26	RHET 105 S1	4.0	A		
+SU26	PHYS 212	4.0	TR		
+PARKLAND: PHY 142
+FA26	ECE 205 AL	3.0	IP	>I	
+FA26	MATH 257 A4	3.0	IP	>I	
+FA26	MSE 307 AE1	3.0	IP	>I	
+FA26	MSE 401 A	3.0	IP	>I	
+FA26	PHYS 214 A3	2.0	IP	>I	
+FA26	STAT 400 YL1	4.0	IP	>I	
+  Sub-Requirement 	CREDIT NOT COUNTING TOWARDS GRADUATION
+FA25	STAT 100 8	0.0	PS	>-	
+Requirement: COLLEGE GPA	Requirement Complete	COLLEGE GPA
+(This is not a graduation requirement.)
+2.25 GPA NEEDED TO AVOID WARNING STATUS
+27.0 GPA HOURS EARNED0.00POINTS0.00GPA
+   	
+FA25	CHEM 102 FL1	3.0	A		
+FA25	CHEM 103 A	1.0	A		
+FA25	MATH 241 AL1	4.0	A		
+FA25	MSE 182 A	2.0	A		
+FA25	PHYS 211 A2	4.0	A		
+SP26	CHEM 104 CL1	3.0	A		
+SP26	CHEM 105 LEC	1.0	A		
+SP26	CS 101 AL1	3.0	A		
+SP26	MATH 285 F1	3.0	A		
+SP26	MSE 201 S	3.0	A		
+Requirement: *********** LEGEND ***********	Requirement	*********** LEGEND ***********
+NO = REQUIREMENT NOT COMPLETE
+OK = REQUIREMENT COMPLETED
+IP = COURSES IN PROGRESS
++ = SUB-REQ. COMPLETED
+- = SUB-REQ. NOT COMPLETED
+* = SUB-REQ. COURSES TAKEN
+
+>I = IN PROGRESS COURSE
+>C = INDIRECT DUPLICATION
+>S = HOURS SPLIT
+>R = REPEATABLE COURSE
+>D = DUPLICATED COURSE
+>X = NOT USED FOR GRADUATION
+>- = CREDIT HAS BEEN REDUCED
+>W = WHAT IF/PLANNED COURSE
+************************ END OF ANALYSIS ************************
+Legend
+- Complete
+- Planned
+- In Progress
+- Unfulfilled
+You must have the free Adobe Reader program installed on your computer to view the documents marked PDF. Download the free Adobe Reader program.
+
+Copyright © 2018 CollegeSource, Inc. All Rights Reserved.
+Privacy Policy
+SelfService Version: 4.5.2 - 01/15/2019 10:12 AM

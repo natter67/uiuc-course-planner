@@ -27,7 +27,10 @@ jobs:
       - name: Crawl Course Explorer
         run: npm run data:crawl -- ${{ inputs.term }}
       - name: Build app data
-        run: npm run data:build -- $(ls -t data/raw/20*-*.json | grep -v sample | head -1)
+        run: |
+          MAIN=$(ls -t data/raw/20*-*.json | grep -v -e sample -e catalog | head -1)
+          CATALOG=$(ls -t data/raw/*-catalog.json 2>/dev/null | head -1)
+          npm run data:build -- "$MAIN" ${CATALOG:+--catalog "$CATALOG"}
       - name: Commit if changed
         run: |
           git config user.name "course-data-bot"

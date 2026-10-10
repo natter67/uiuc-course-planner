@@ -1,12 +1,16 @@
 # Illini Course Planner
 
-A schedule builder for UIUC students. Add the courses you want next semester and it finds every
-conflict-free combination of lecture, discussion and lab sections, ranked by what you care about:
-fewer gaps, days off, later mornings, or instructors who grade more generously. Each course shows
-seat status, section restrictions, and a professor comparison built from the UIUC GPA dataset.
+A course planner for UIUC students, in two parts:
 
-This is the first piece of a larger planner (degree requirements, prerequisite graph, four-year
-plan, what-if majors). The full build plan lives in the project doc.
+- **My degree.** Import your uAchieve degree audit (paste it, upload the saved page, or use the
+  browser extension). The planner sees what you've taken and what's left, lists the courses that
+  can fill each remaining requirement (with prerequisites checked against your record, GPA, and
+  which ones count for two requirements at once), and lays out a semester-by-semester plan to
+  graduation. Works for any major or minor, because the audit itself says what counts.
+- **Schedule builder.** Add the courses you want next semester and it finds every conflict-free
+  combination of lecture, discussion and lab sections, ranked by fewer gaps, days off, later
+  mornings, or instructors who grade more generously. Each course shows seat status, restrictions,
+  and a professor comparison from the UIUC GPA dataset.
 
 Unofficial student project. Not affiliated with the University of Illinois.
 
@@ -19,6 +23,32 @@ npm test             # unit tests (solver, restrictions, crawler parsing)
 ```
 
 The repo ships with prebuilt data in `public/data/`, so the app runs without crawling.
+
+## Importing an audit
+
+| Way | How |
+| --- | --- |
+| Paste | Open the audit in uAchieve, Cmd+A, Cmd+C, paste into **My degree** |
+| Upload | Save the audit page (File → Save Page As) and upload it |
+| Extension | Load `extension/` in Chrome (see `extension/README.md`); a button appears on the audit page |
+
+The audit stays in the browser (localStorage). The extension passes it in the link's `#fragment`,
+which is never sent to a server. The extension reads the page's markup, not your name or ID.
+
+### How planning works
+
+- `src/lib/audit.ts` parses the audit: requirement status, courses taken, `NEEDS:` and the
+  `SELECT FROM` / `NOT FROM` course rules (ranges like `ABE 200 TO 496`, wildcards like `***** 297`).
+- `src/lib/supplements.ts` adds course lists the audit leaves out (MatSE Topical Lectures, from the
+  Academic Catalog). Add a block when another major needs one.
+- `src/lib/prereqs.ts` reads Course Explorer's prerequisite sentences ("MSE 206; credit or
+  concurrent registration in MSE 201 and MSE 401") into rules and checks them.
+- `src/lib/plan.ts` lists candidates per need and builds the roadmap: required named courses first
+  (they're the prerequisite chain that sets your graduation date), then electives, preferring
+  courses that fill two needs; schedules a missing prerequisite (ECON 102 before FIN 221); skips
+  courses restricted to other majors; ignores class-standing limits in future terms; respects the
+  catalog caps (no more than 2 introductory topical lectures).
+- Seasons come from when each course ran in the GPA data's last four years plus the loaded terms.
 
 ## Data
 
@@ -35,8 +65,11 @@ Refresh everything:
 npm run data:gpa                         # GPA CSV (8.5 MB, not committed)
 npm run data:crawl                       # newest published term -> data/raw/<term>.json
 npm run data:crawl -- 2027-spring        # or a specific term
-npm run data:build -- data/raw/2027-spring.json
+npm run data:build -- data/raw/2027-spring.json --catalog data/raw/2026-fall-catalog.json
 ```
+
+The crawler also writes `<other season>-catalog.json` (titles, hours, gen eds, prerequisites from the
+latest term of the other season) so courses not offered in the main term can still be planned.
 
 `.github/workflows/crawl.yml` does this every 6 hours and commits `public/data/` when it changes.
 Run it by hand from the Actions tab (it accepts a term). The crawler waits 250 ms between requests
@@ -86,6 +119,6 @@ combinations.
 
 - Spring 2027 data as soon as Course Explorer publishes it (the crawler picks it up automatically)
 - Rate My Professors numbers in the professor table
-- MatSE degree requirements and the prerequisite graph
-- Companion Chrome extension that imports your uAchieve audit and Grainger plan from your own
-  signed-in browser, the way Illini Dash reads Canvas
+- Prerequisite graph view of the plan
+- Swap an elective in the plan and re-plan around it; what-if for a different major
+- Publish the extension to the Chrome Web Store

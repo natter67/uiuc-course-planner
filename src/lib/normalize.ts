@@ -121,7 +121,7 @@ export function normalizeCourse(raw: RawCourse): Course {
     number,
     title: raw.title,
     creditHours: hours,
-    minHours: Number(/\d+/.exec(hours)?.[0] ?? 0),
+    minHours: Number(/\d+(?:\.\d+)?/.exec(hours)?.[0] ?? 0),
     genEd: raw.genEd,
     degreeAttributes: raw.degreeAttr,
     scheduleNote: raw.schedNote,

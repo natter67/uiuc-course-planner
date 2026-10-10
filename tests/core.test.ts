@@ -156,7 +156,7 @@ describe("gpa", () => {
   });
   it("computes weighted GPA and share of A grades", () => {
     const counts = { "A+": 0, A: 2, "A-": 0, "B+": 0, B: 2, "B-": 0, "C+": 0, C: 0, "C-": 0, "D+": 0, D: 0, "D-": 0, F: 0 };
-    const g = aggregateGpa([{ yearTerm: "2025-fa", year: 2025, subject: "MSE", number: "401", counts, instructor: "Doe, Jane" }], { sinceYear: 2021 });
+    const g = aggregateGpa([{ yearTerm: "2025-fa", year: 2025, subject: "MSE", number: "401", title: "Thermo", counts, instructor: "Doe, Jane" }], { sinceYear: 2021 });
     expect(g["MSE 401"].course.gpa).toBe(3.5);
     expect(g["MSE 401"].course.pctA).toBe(50);
     expect(g["MSE 401"].instructors["doe|j"].students).toBe(4);

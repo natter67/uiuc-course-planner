@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Illini Course Planner: Audit Import",
+  "version": "0.1.0",
+  "description": "Adds an Open in Illini Course Planner button to your uAchieve degree audit. Your audit goes straight to the planner in your browser; nothing is uploaded.",
+  "permissions": ["storage"],
+  "action": { "default_popup": "popup.html", "default_title": "Illini Course Planner" },
+  "content_scripts": [
+    {
+      "matches": ["https://uachieve.apps.uillinois.edu/uachieve_uiuc/audit/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

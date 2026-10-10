@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CourseDetail from "./CourseDetail";
+import DegreeView from "./DegreeView";
+import { takeAuditFromUrl } from "@/lib/auditImport";
 import WeekGrid from "./WeekGrid";
 import { GEN_ED_LABELS, loadCourses, loadIndex, loadTerms, termLabel, type TermIndex } from "@/lib/data";
 import { formatTime } from "@/lib/normalize";
@@ -40,6 +42,20 @@ export default function Planner() {
   const [term, setTerm] = useState<string>("");
   const [index, setIndex] = useState<TermIndex | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+
+  const [tab, setTab] = useState<"degree" | "schedule">("degree");
+  const [auditText, setAuditTextState] = useState<string | null>(null);
+  const setAuditText = (t: string | null) => {
+    setAuditTextState(t);
+    try { if (t) localStorage.setItem("planner.audit", t); else localStorage.removeItem("planner.audit"); } catch { /* storage unavailable */ }
+  };
+  useEffect(() => {
+    (async () => {
+      const fromUrl = await takeAuditFromUrl();
+      if (fromUrl) { setAuditText(fromUrl); setTab("degree"); return; }
+      try { const saved = localStorage.getItem("planner.audit"); if (saved) setAuditTextState(saved); } catch { /* storage unavailable */ }
+    })();
+  }, []);
 
   const [cart, setCart] = useStored<CartItem[]>("planner.cart", []);
   const [prefs, setPrefs] = useStored<Preferences>("planner.prefs", DEFAULT_PREFS);
@@ -91,7 +107,7 @@ export default function Planner() {
   }, []);
 
   const loadedIds = useMemo(() => new Set(courses.map((c) => c.id)), [courses]);
-  const ready = cart.length > 0 && cart.every((c) => loadedIds.has(c.courseId) || !index?.courses.some((x) => x.id === c.courseId));
+  const ready = cart.length > 0 && cart.every((c) => loadedIds.has(c.courseId) || !index?.courses.some((x) => x.id === c.courseId && x.inTerm));
 
   const post = useCallback((msg: SolveRequest extends infer R ? (R extends SolveRequest ? Omit<R, "id"> : never) : never) => {
     if (!worker.current) return;
@@ -126,6 +142,7 @@ export default function Planner() {
     if (!index) return [];
     const q = query.trim().toLowerCase().replace(/\s+/g, " ");
     let list = index.courses.filter((c) => {
+      if (!c.inTerm) return false;
       if (genEd && !c.genEd.includes(genEd)) return false;
       if (!q) return !!genEd;
       return c.id.toLowerCase().includes(q) || c.id.toLowerCase().replace(" ", "").includes(q.replace(" ", "")) || c.title.toLowerCase().includes(q);
@@ -155,12 +172,21 @@ export default function Planner() {
     post({ kind: "replace", current: schedule, courseId: selected, cart, courses, profile, prefs, gpa });
   };
 
-  const missing = cart.filter((c) => index && !index.courses.some((x) => x.id === c.courseId));
+  const missing = cart.filter((c) => index && !index.courses.some((x) => x.id === c.courseId && x.inTerm));
+  const addMany = (ids: string[], required: boolean) => {
+    const add = ids.filter((id) => !cart.some((c) => c.courseId === id));
+    if (add.length) setCart([...cart, ...add.map((courseId) => ({ courseId, required }))]);
+  };
+  const cartIds = useMemo(() => new Set(cart.map((c) => c.courseId)), [cart]);
 
   return (
     <div className="app">
       <header className="topbar">
-        <div className="brand">Illini Course Planner<small>schedule builder</small></div>
+        <div className="brand">Illini Course Planner</div>
+        <nav className="tabs" aria-label="Views">
+          <button aria-pressed={tab === "degree"} onClick={() => setTab("degree")}>My degree</button>
+          <button aria-pressed={tab === "schedule"} onClick={() => setTab("schedule")}>Schedule builder{cart.length ? ` (${cart.length})` : ""}</button>
+        </nav>
         <label>Term
           <select value={term} onChange={(e) => setTerm(e.target.value)}>
             {terms.map((t) => <option key={t} value={t}>{termLabel(t)}</option>)}
@@ -180,9 +206,20 @@ export default function Planner() {
 
       {loadError && <div className="notice bad" role="alert">Couldn&apos;t load course data: {loadError}</div>}
 
-      <main className="layout">
+      {tab === "degree" && (
+        <main className="degree-wrap">
+          <DegreeView auditText={auditText} setAuditText={setAuditText} index={index} profile={profile}
+            cartIds={cartIds} onAddToCart={addMany} onOpenSchedule={() => setTab("schedule")} />
+        </main>
+      )}
+      <main className="layout" hidden={tab !== "schedule"}>
         {/* ---------- left: search, cart, preferences ---------- */}
         <div className="left-col">
+          {missing.length > 0 && (
+            <div className="notice" style={{ margin: "0 0 16px" }}>
+              {missing.map((m) => m.courseId).join(", ")} {missing.length > 1 ? "aren't" : "isn't"} offered in {termLabel(term)}. They stay in your list for when the next term is published.
+            </div>
+          )}
           <div className="panel p-search">
             <h2>Add courses</h2>
             <div className="body">
@@ -343,9 +380,6 @@ export default function Planner() {
             </div>
           )}
 
-          {missing.length > 0 && (
-            <div className="notice">{missing.map((m) => m.courseId).join(", ")} {missing.length > 1 ? "aren't" : "isn't"} offered in {termLabel(term)}.</div>
-          )}
 
           {result && !solving && result.schedules.length === 0 && cart.length > 0 && (
             <div className="notice bad" role="status">

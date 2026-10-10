@@ -10,6 +10,10 @@ export interface IndexRow {
   open: number;
   gpa: number | null;
   pctA: number | null;
+  prereq: string;
+  seasons: string;
+  inTerm: boolean;
+  restriction: string;
 }
 
 export interface TermIndex {

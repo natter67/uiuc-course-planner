@@ -3,6 +3,10 @@
 //   tsx scripts/crawl.ts                 newest term with a published schedule
 //   tsx scripts/crawl.ts 2027-spring     a specific term
 //
+// It also writes data/raw/<term>-catalog.json for the most recent term of the other season
+// (spring when planning fall, and vice versa): titles, hours, gen eds and prerequisites for
+// courses the main term doesn't offer. build-data takes it with --catalog.
+//
 // One XML request per subject (?mode=cascade returns every course and section), plus one
 // HTML request per course for seat status, which the XML API does not include. Seat status
 // is fetched only for the subjects in crawl.config.json plus every gen ed course, to keep
@@ -193,6 +197,34 @@ async function main() {
   const out = `data/raw/${term}.json`;
   writeFileSync(out, JSON.stringify({ term, fetchedAt: new Date().toISOString(), courses }));
   console.log(`Wrote ${out}: ${courses.length} courses, ${courses.reduce((n, c) => n + c.secs.length, 0)} sections`);
+
+  // Catalog details from the latest term of the other season.
+  const otherTerm = season === "fall" ? `${year}-spring` : `${Number(year) - 1}-fall`;
+  await crawlCatalog(otherTerm);
+}
+
+async function crawlCatalog(term: string) {
+  const [year, season] = term.split("-");
+  try {
+    const termDoc = xml.parse(await get(`${BASE}/cisapp/explorer/schedule/${year}/${season}.xml`));
+    const subjects: string[] = (termDoc["ns2:term"]?.subjects?.subject ?? []).map((s: Record<string, any>) => s["@id"]);
+    const lists = await pool(subjects, async (subj) => {
+      try {
+        return parseSubjectCascade(await get(`${BASE}/cisapp/explorer/schedule/${year}/${season}/${subj}.xml?mode=cascade`));
+      } catch {
+        return [];
+      }
+    });
+    const courses = lists.flat().map((c) => {
+      const r = toRawCourse(c, {});
+      return { id: r.id, title: r.title, hours: r.hours, genEd: r.genEd, info: r.info };
+    });
+    const out = `data/raw/${term}-catalog.json`;
+    writeFileSync(out, JSON.stringify({ term, courses }));
+    console.log(`Wrote ${out}: ${courses.length} courses`);
+  } catch (e) {
+    console.warn(`catalog ${term}: ${(e as Error).message}`);
+  }
 }
 
 if (process.argv[1]?.endsWith("crawl.ts")) main().catch((e) => { console.error(e); process.exit(1); });

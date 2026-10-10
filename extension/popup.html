@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font: 14px/1.4 system-ui, sans-serif; width: 300px; margin: 14px; color: #172033; }
+    h1 { font-size: 15px; margin: 0 0 6px; }
+    p { margin: 0 0 10px; color: #5a6478; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    input { width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid #dce1ea; border-radius: 6px; font: inherit; }
+    button { margin-top: 8px; padding: 6px 12px; border: 0; border-radius: 6px; background: #2457d6; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+    .saved { color: #1b8a5a; margin-left: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Illini Course Planner</h1>
+  <p>Open your audit in uAchieve and click <b>Open in Illini Course Planner</b> at the bottom right.</p>
+  <label for="url">Planner address</label>
+  <input id="url" type="url" placeholder="http://localhost:3000">
+  <button id="save" type="button">Save</button><span class="saved" id="saved" hidden>Saved</span>
+  <script src="popup.js"></script>
+</body>
+</html>

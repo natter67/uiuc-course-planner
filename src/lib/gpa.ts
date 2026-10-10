@@ -34,6 +34,7 @@ export interface GpaRow {
   year: number;
   subject: string;
   number: string;
+  title: string;
   counts: Record<string, number>; // grade -> count
   instructor: string;
 }
@@ -143,6 +144,7 @@ export function parseGpaCsv(text: string): GpaRow[] {
       year: Number(f[col("Year")]),
       subject: f[col("Subject")],
       number: f[col("Number")],
+      title: f[col("Course Title")] ?? "",
       counts,
       instructor: f[col("Primary Instructor")] ?? "",
     };

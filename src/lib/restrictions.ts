@@ -30,7 +30,13 @@ export interface AccessResult {
   reasons: string[];
 }
 
-function terms(p: StudentProfile): string[] {
+function terms(p: StudentProfile, sentence: string): string[] {
+  const s = sentence.toLowerCase();
+  // "Restricted to X major(s)" / "... minor(s)": compare against majors and minors only, so
+  // "Agr Engineering major(s)" doesn't match a Grainger Engineering student.
+  if (/\bmajors?\b|\bminors?\b|\(s\)/.test(s) && /major|minor/.test(s)) {
+    return [p.major, ...p.majorAliases, ...p.programs].filter(Boolean).map((x) => x.toLowerCase().replace(/&/g, "and"));
+  }
   const t = [p.college, p.major, ...p.majorAliases, ...p.programs, p.standing];
   if (/engineering/i.test(p.college)) t.push("Engineering");
   if (p.standing === "Freshman") t.push("First Time Freshman", "Freshman");
@@ -38,12 +44,11 @@ function terms(p: StudentProfile): string[] {
 }
 
 function mentions(sentence: string, ts: string[]): boolean {
-  const s = sentence.toLowerCase();
-  return ts.some((t) => s.includes(t));
+  const s = sentence.toLowerCase().replace(/&/g, "and");
+  return ts.some((t) => t && s.includes(t));
 }
 
 export function evaluateAccess(section: Section, profile: StudentProfile): AccessResult {
-  const ts = terms(profile);
   const reasons: string[] = [];
   let access: Access = "ok";
   const block = (r: string) => {
@@ -53,6 +58,7 @@ export function evaluateAccess(section: Section, profile: StudentProfile): Acces
 
   for (const r of section.restrictions) {
     const lower = r.toLowerCase();
+    const ts = terms(profile, r);
     if (lower.startsWith("not intended for")) {
       if (mentions(r, ts)) block(r);
     } else if (lower.startsWith("restricted to")) {

@@ -1,0 +1,9 @@
+#icp-send {
+  position: fixed; right: 20px; bottom: 20px; z-index: 2147483647;
+  padding: 10px 16px; border: 0; border-radius: 8px;
+  background: #2457d6; color: #fff; font: 600 14px/1.2 system-ui, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); cursor: pointer;
+}
+#icp-send:disabled { opacity: 0.8; cursor: default; }
+#icp-send:focus-visible { outline: 3px solid #13294b; outline-offset: 2px; }
+

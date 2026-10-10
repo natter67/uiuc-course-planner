@@ -11,7 +11,8 @@
     "data:build": "tsx scripts/build-data.ts",
     "data:crawl": "tsx scripts/crawl.ts",
     "data:gpa": "mkdir -p data/raw && curl -sSL -o data/raw/uiuc-gpa-dataset.csv https://raw.githubusercontent.com/wadefagen/datasets/main/gpa/uiuc-gpa-dataset.csv",
-    "data:sample": "tsx scripts/build-data.ts data/raw/2026-fall-sample.json"
+    "data:sample": "tsx scripts/build-data.ts data/raw/2026-fall-sample.json",
+    "ext:build": "esbuild extension/src/content.ts --bundle --format=iife --target=chrome110 --outfile=extension/content.js --legal-comments=none"
   },
   "keywords": [],
   "author": "",
@@ -25,9 +26,12 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@types/jsdom": "^30.0.0",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "esbuild": "^0.28.2",
+    "jsdom": "^29.1.1",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vitest": "^5.0.3"
