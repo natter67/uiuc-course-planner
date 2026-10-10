@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+*.tsbuildinfo
+next-env.d.ts
+.env*
+# large or regenerated inputs
+data/raw/uiuc-gpa-dataset.csv
+data/raw/20*-*.json
+!data/raw/2026-fall-sample.json

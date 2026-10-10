@@ -1,0 +1,38 @@
+name: Refresh course data
+on:
+  schedule:
+    # Every 6 hours. Tighten during registration weeks if seat status needs to be fresher.
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      term:
+        description: "Term to crawl, e.g. 2027-spring (blank = newest published)"
+        required: false
+permissions:
+  contents: write
+concurrency:
+  group: crawl
+  cancel-in-progress: false
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Download GPA dataset
+        run: npm run data:gpa
+      - name: Crawl Course Explorer
+        run: npm run data:crawl -- ${{ inputs.term }}
+      - name: Build app data
+        run: npm run data:build -- $(ls -t data/raw/20*-*.json | grep -v sample | head -1)
+      - name: Commit if changed
+        run: |
+          git config user.name "course-data-bot"
+          git config user.email "course-data-bot@users.noreply.github.com"
+          git add public/data
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Refresh course data $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
